@@ -25,14 +25,7 @@ public class CompanyServerAppl {
 		Protocol protocol = new CompanyProtocol(company);
 		TcpServer tcpServer = new TcpServer(protocol, PORT);
 		Thread tcpServerThread = new Thread(tcpServer);
-		// FIXME need to start TCPServer as a thread
 		tcpServerThread.start();
-
-		// TODO
-		// cycle with asking a user to enter shutdown for exit from the server
-		// regular while cycle with no using cli-view
-		// by entering "shutdown" you should call method shutdown of the TcpServer
-		// after shutdown you should perform saving the data into the file
 
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String userInput = null;
@@ -42,7 +35,7 @@ public class CompanyServerAppl {
 				userInput = reader.readLine();
 				if (userInput.equals("shutdown")) {
 					tcpServer.shutdown();
-					waitUntilThreadShutdown(tcpServerThread);
+					waitForServerToTerminate(tcpServerThread);
 					saveCompanyData(company, FILE_NAME);
 					return;
 
@@ -54,15 +47,12 @@ public class CompanyServerAppl {
 
 	}
 
-	private static void waitUntilThreadShutdown(Thread thread) {
-		while (thread.getState() != Thread.State.TERMINATED) {
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e.getMessage());
-			}
+	private static void waitForServerToTerminate(Thread thread) {
+		try {
+			thread.join();
+		} catch (InterruptedException e) {
+			
 		}
-
 	}
 
 	private static void saveCompanyData(Company company, String fileName) {

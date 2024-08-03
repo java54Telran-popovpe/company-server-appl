@@ -41,7 +41,7 @@ public class CompanyProtocol implements Protocol {
 			default -> wrongTypeResponse(requestType);
 			};
 		} catch (Exception e) {
-			response = wrongDataResponse( e.getMessage() );
+			response = wrongDataResponse( "Error on server: " + e.getMessage() );
 		}
 		return response;
 	}
