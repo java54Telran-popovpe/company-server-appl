@@ -26,7 +26,7 @@ public class CompanyProtocol implements Protocol {
 	}
 
 	@Override
-	public Response getResponse(Request request) {
+	synchronized public Response getResponse(Request request) {
 		String requestType = request.requestType();
 		String requestData = request.requestData();
 		Response response = null;
